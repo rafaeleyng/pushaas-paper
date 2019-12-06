@@ -1,0 +1,32 @@
+\section{Methodology} \label{section-methodology}
+
+This is an applied research focused on solving the specific problem of providing a given functionality in the context of the Tsuru platform. This work is constituted of the implementation and deployment of a solution, and a subsequent evaluation of the system, with the analysis of several non-quantifiable variables, as well as with other quantifiable variables. Because of this nature, a mixed approach of both qualitative and quantitative methods will be employed to evaluate the implementation.
+
+On the evaluation phase, 25 employees of the brazilian media company Globo.com were invited to participate, from which 15 finished the evaluation, by submiting the questionnaire. The choice of inviting Globo.com employees was due to Globo.com involvement in the related projects. The company supports the active development of Tsuru, participated on the Nginx Push Stream module development, and currently uses both tools on production systems with millions of users. So, both the employees general experience and specific know-how about these tools would help them to better evaluate the system.
+
+The steps on the evaluation process consisted of:
+
+\begin{itemize}
+    \item watch a video with a general exposition of the system, specially the Nginx Push Stream module, the Push Service system and the PushaaS system.
+    \item watch a video with a demonstration of the system.
+    \item run exactly the same demonstration of the previous step. Because running the demonstration required installed software (the Tsuru CLI), this step was optional.
+    \item answer an electronic questionnaire.
+\end{itemize}
+
+For the demonstration referred above, the application push-service-demo-app~\footnote{https://github.com/pushaas/push-service-demo-app} was developed. This application is a simulation of a news website, where content can be consumed in a news feed, and also features a publishing interface, to simulate the publication of new content. This application has two modes of operation. If the application is unable to find an instance of Push Service bound to the application, the web application only load news upon a page refresh or navigation. If the application can find an instance of Push Service bound to the application, the web application will connect to the subscribing interface of the Push Service, and receive news and updates in real time, without the need of a refresh.
+
+The demonstration was recorded on video and each participant received credentials that allowed him to reproduce the demonstration, if desired. The demonstration consisted of running a series of commands and performing a series of actions. These can be summarized as:
+\begin{itemize}
+    \item create an application on the Tsuru cluster and deploy the push-service-demo-app code to it.
+    \item open the application on the browser, and use it. The application would not have an instance of Push Service created and bound to it, so it would work, but without real-time updates.
+    \item request the creation of a Push Service instance.
+    \item wait while the Push Service instance is being provisioned.
+    \item bind the created Push Service instance to the demonstration application.
+    \item open again the application on the browser, and use it. Now the application would have an instance of Push Service created and bound to it, so it would work with real-time updates.
+\end{itemize}
+
+The questionnaire is divided in sections. The first section is about the interviewee background on software development and on technologies related to the proposed implementation, which provides explanatory variables that help to analyze the remaining questions \cite{valli2017creating}. The remaining sections are focused on evaluation of different aspects of the system.
+
+The questions about the system itself concerning more abstract, non quantifiable aspects of the system, so most questions gave room for the interviewee to analyze a particular aspect and expose perceptions, as well as raise attention points, that were collected and analyzed. Four questions asked the interviewee to answer using a Likert scale of five points, but besides the scale answer, a justification for the answer was asked. In all the cases the scale was used to directly measure satisfaction with aspects of the system, instead of using a traditional scale of agreement, which would add an undesired level of indirection (in this case, agreement with satisfaction levels) \cite{silva2014measurement}.
+
+Besides the questionnaire, a brief experiment measuring the provisioning time of Push Service instances on Amazon ECS was conducted by the author, to obtain a rough baseline of the required time to provision a new instance of the service.

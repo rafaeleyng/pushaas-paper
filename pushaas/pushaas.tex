@@ -1,0 +1,34 @@
+%=====================================
+% preamble
+%=====================================
+\documentclass[english]{UNISINOSartigo}
+\input{preamble/config.tex}
+
+\import{preamble/}{metadata.tex}
+
+%=====================================
+% document
+%=====================================
+\begin{document}
+
+% prelude
+\import{document/prelude/}{begin-document.tex}
+\import{document/prelude/}{commands.tex}
+\import{document/prelude/}{abstract.tex}
+
+% chapters
+\import{document/chapters/}{01-introduction.tex}
+\import{document/chapters/}{02-theoretical-framework.tex}
+\import{document/chapters/}{03-related-work.tex}
+\import{document/chapters/}{04-methodology.tex}
+\import{document/chapters/}{05-implementation.tex}
+\import{document/chapters/}{06-results-analysis.tex}
+\import{document/chapters/}{07-conclusion.tex}
+\import{document/chapters/}{08-future-work.tex}
+
+%=====================================
+% references
+%=====================================
+\bibliography{pushaas}
+
+\end{document}

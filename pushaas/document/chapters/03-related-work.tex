@@ -1,0 +1,65 @@
+\section{Related Work} \label{section-related-work}
+
+\subsection{Systems That Implement Server Push Functionality}
+
+\subsubsection{A RESTful web notification service}
+
+\citetexto{lo2016restful} proposes a RESTful notification system using server push, attached to the application implementation, avoiding a separate middleware. The argument in avoiding this extra component is to reduce complexity and ease development, but should be noted that this paper doesn't consider the development and deployment on a cloud environment, where infrastructure components doesn't have the same burden in provision as in traditional environments. Besides that, coupling of server push functionality system to the application in this implementation doesn't allow reuse of the solution.
+
+The authors discuss several server push techniques. Polling and long-polling are discarded because of resource consumption. WebSockets are considered but would require the server-side to be aware of two protocols (WebSockets, besides the HTTP already). The implementation was done used only Server-Sent Events. To scope notifications, the work proposes a criteria filtering.
+
+\subsubsection{Research on server push methods in web browser based instant messaging applications}
+
+\citetexto{shuang2013research} conducts a study on using server push on instant messaging applications, exploring different techniques, like HTTP polling, HTTP long-polling, HTTP streaming and WebSockets. The four methods provided different experiences on the delivery efficiency. HTTP polling is easier to implement but either requires the usage of an interval between polls (which delays the message delivery), or makes unnecessary requests. HTTP long-polling, on the other hand, avoids the unnecessary requests and delivers the messages more timely, but requires extra implementation server side. HTTP streaming presents an improvement, specially under a high volume of messages, where several messages can be sent as response to a single request, but can have a number of different issues with buffering proxies and firewalls. All these methods rely on HTTP and suffer from the same issue of HTTP adding some weight to the messages, in the form of unnecessary headers data. WebSockets have features to answer all the problems, at the cost of being unsupported in some older browsers or networking environments.
+
+Similarly to the previous work, this work implements the solution inside the application. As a future work, the author proposes to create a framework to unify the handling of all four methods.
+
+\subsection{Cloud Computing Systems}
+
+\subsubsection{Framework for evaluating reusability of component-as-a-service}
+
+\citetexto{la2013framework} proposes a framework to evaluate the reusability of components offered as services.
+
+The framework presents eight aspects that are further broken down into more granular objective metrics, allowing to determine a number between 0 and 1 to represent a component reusability. The considered aspects are modularity, adaptability, composability, commonality, comprehensibility, interface soundness, QoS assurance and publicity. The modularity aspect of an application, for instance, could be computed by evaluating the metrics of Cohesiveness of Services and Minimality of Dependency. Cohesiveness of Services is calculated from the relationship found in mapping of functionalities to components, where the ideal would be one functionality being provided by one component, yielding a metric of 1. Minimality of Dependency is found by subtracting from 1 the division of the number of the service's functions that rely on external services by the service's total number of functions, where a service with no external dependencies would also yield a metric of 1. The other aspects can also be objectively computed to reveal the component reusability.
+
+\subsubsection{Beyond IaaS and PaaS - An Extended Cloud Taxonomy for Computation, Storage and Networking}
+
+\citetexto{kachele2013beyond} analyzes the taxonomy of cloud services, proposing an extended and more uniform nomenclature for computational, networking and storage resources, dividing each resource type into different abstraction levels, and classifying based on "the topmost level that is fully managed by the cloud provider".
+
+The paper proposes five layers of abstraction for computational resources, instead of the commonly seen division in IaaS, PaaS and SaaS. IaaS can be understood as node-based infrastructure and divided in two separate layers: Hardware-as-a-Service (HWaaS) offers bare hardware to the tenant, allowing the tenant control starting from the operating system kernel and boot loader level, while Operating System as a Service (OSaaS) allows the tenant the control over the daemons and processes, with a single-node view. PaaS doesn't provide the vision of a computational node, and can be divided in two separate layers: Runtime Environment as a Service (RaaS), where the tenant deploys his own application with full control over the application, and Framework as a Service (FaaS), where the tenant only deploys code to be invoked by the execution environment. SaaS "is the provisioning of entire applications as a resource", while all hardware and software is managed by the provider. The application can either be or not be accessible to clients.
+
+\subsubsection{An efficient multi-task PaaS cloud infrastructure based on docker and AWS ECS for application deployment}
+
+\citetexto{tihfon2016efficient} proposes a multi-task PaaS cloud infrastructure, developed on top of Amazon infrastructure. Developers using the service can build applications to run on Docker containers, and the proposed system uses Amazon EC2 Container Service to distribute the load on the cluster, and manages other services and load balancers.
+
+\subsubsection{Challenges for the comprehensive management of Cloud Services in a PaaS framework}
+
+\citetexto{garcia2012challenges} describes the 4CaaSt project, a European Union-funded project aimed to develop a PaaS framework. The paper presents the concept of blueprints, which describe every application, component or service in terms of its various aspects like lifecycle and associated resources. The blueprinting approach introduces the usage of blueprint templates as a simplified method for provisioning cloud services. Software providers describe all relevant aspects of a service in a so-called source blueprint, that service providers can use to create a service offering. A service developer can rely on existing services by declaring this dependency on its own service's blueprint. This system also proposes a cloud marketplace which can offer several cloud services and provide them based on blueprints.
+
+On elasticity, 4CaaSt provides support to execute PaaS deployments on different infrastructure components, unlike other PaaS offerings (Google App Engine, Amazon Beanstalk etc), which rely on homogenous infrastructure resources.
+
+\subsection{Cloud Services}
+
+\subsubsection{Evolution of as-a-Service Era in Cloud}
+
+\citetexto{sharma2015evolution} observes the paradigm shift toward cloud environments, in order to obtain robust and affordable services, noting a "rise to the accelerated evolution of 'as-a-Service' (aaS) framework in almost all the domains". The paper then lists 68 services found in literature being provided in the "as a Service" model. Some of the services that were found to be somewhat similar to the proposed on the current paper are: Database-as-a-Service (DBaaS), Hadoop-as-a-Service (HDaaS), Storage-as-a-Service (StaaS), Testing-as-a-Service (TeaaS).
+
+\subsubsection{A XaaS savvy Automated Approach to Composite Applications}
+
+\citetexto{debnath2015xaas} analyzed several services provided by cloud providers, both in terms of functional and non-functional attributes, and concluded that these service descriptions are not structured. The paper then defines a web service description schema with attributes to represent the service's basic information (name, category, description), inputs and outputs, and tags (that are used to express the core features of a service) and proposes an automated algorithm to receive a composer's input to match available services and create a manifest which is used to orchestrate the application, using the configuration tool Puppet.
+
+Noting the cost reduction of operating databases inside a service, both on licensing and administrative costs, specially because of the need of specialized operation and configuration for commercial DBMSs to achieve a good performance, \citetexto{curino2011relational} presents Relational Cloud, a Database-as-a-Service developed by the authors.
+
+The paper proposes a workload-aware system, which is used to split tenants databases across a pool of nodes. In this system, instead of provisioning new resources to the users when a new service instance is created, the pool of computational nodes is already provisioned, and new instances actually create new databases inside the database servers running on the nodes.
+
+Users have access to the SQL features of the DBMS without being responsible for provisioning hardware resources, configuring software and tuning performance, security, access control and data privacy.
+
+\subsubsection{ORESTES - a Scalable Database-as-a-Service Architecture for Low Latency}
+
+\citetexto{gessert2014orestes} presents a Backend-as-a-Service/Database-as-a-Service called ORESTES (Objects RESTfully Encapsulated in Standard Formats), specially focused on providing low latency for users' requests, normally coming from web and mobile applications, and with read-intensive operations. The system also includes a REST interface and a server-side schema management, and stores data on an underlying NoSQL database, to benefit from it's scalable nature. While users can choose the specific database, like MongoDB or Cassandra, based on her own specific needs, the REST interface provides a uniform CRUD interface. But the database-specific querying functionalities are also allowed. To mitigate latency, cache is used on top of the HTTP interface, using a Bloom filter algorithm to achieve cache consistency.
+
+The system uses cloud-hosted NoSQL databases, exposing them through the mentioned REST interface, but adds ACID transactions in a middleware level, leverages web caching to optimize responses and to achieve global content distribution, adds schema management and provides autoscaling. The system uses a complex coordination of six cache levels to achieve low-latency for the end user, and to provide this in a globally distributed access pattern.
+
+\subsection{Server Push as a Service}
+
+No work mentioning a cloud service meant to provide the server push functionality was found. It could be because of the usual approach of dealing with server push on the application code. The fact that server push technology is a relatively mature field, with the rise of cloud services no efforts of providing it as a service were done.

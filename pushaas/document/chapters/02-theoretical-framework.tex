@@ -1,0 +1,60 @@
+\section{Theoretical Framework} \label{section-theoretical-framework}
+
+Several technologies are needed to implement the proposed solution. Here they are examined, divided in three main axis:
+\begin{itemize}
+    \item tools that provide server push functionality.
+    \item cloud computing systems that can be used to build the system upon.
+    \item tools needed to build the proposed service's custom logic.
+\end{itemize}
+
+\subsection{Server Push Functionality}
+
+Server push is a programming model where, in a client/server architecture, a server sends data to the client without an explicit client request for that data. Here the technology employed in providing this functionality is studied.
+
+\subsubsection{Nginx}
+
+Nginx is a ``high-performance, low-footprint web server that follows the non-blocking, event-driven model'' \cite{marinos2014network}. Nginx can be compiled with the Push Stream module extension in order to provide the server push functionality, and expose the Nginx server to the application users. It is the Nginx (with the module enabled) that is responsible for actually pushing the content to the clients.
+
+\subsubsection{Push Stream module}
+
+The Push Stream module is an open-source piece of software that can be compiled together with Nginx in order to provide server push functionality.
+
+It provides an endpoint for message producers and the infrastructure to deal with the message consumers, supporting several techniques for serving the message consumers. A browser-side Javascript library to connect to a "Push Stream"-enabled Nginx is also provided, featuring all the techniques supported server-side (Forever Iframe, Long Polling, Websockets and Server-Sent Events).
+
+\subsection{Cloud Computing Systems}
+
+This work proposes a cloud service, so it is necessary to run it on top of existing cloud systems. Here some technologies that might be employed to build the service will be analyzed.
+
+\subsubsection{Amazon Web Services}
+
+AWS is a feature-rich cloud platform that provides computing and networking functionality needed for the implementation, such as Virtual Private Clouds and Subnets, Access Control Rules, Virtual Machine instances and a Container Scheduling platform.
+
+\paragraph{Amazon Elastic Container Service}
+
+Since this work proposes an "as a Service" functionality, it is necessary to provision new computational resources upon the creation of every new instance of the service, as well to remove it upon removal of a service instance. The proposed tool for this is Amazon Elastic Container Service (Amazon ECS).
+
+\subsubsection{PaaS}
+
+The cloud service proposed is meant to be provided to applications running on a PaaS, which is common service models that cloud providers offer. According to the NIST definition \cite{mell2011nist}, under the PaaS cloud service model, ``the capability provided to the consumer is to deploy onto the cloud infrastructure consumer-created or acquired applications created using programming languages, libraries, services, and tools supported by the provider. The consumer does not manage or control the underlying cloud infrastructure [...]''. So a ``main goal of PaaS systems is to relieve users of the burden of managing underlying resources'' \cite{costache2017resource}.
+
+\subsubsection{Tsuru}
+
+Tsuru is an "open source and polyglot platform for cloud computing" \cite{vergara2014deployment}, developed by the brazilian media company Globo.com, since 2012. It is in fact a PaaS system, well suited for running web applications (although not limited to that), written in several programming languages, like Python, PHP, Node.js, Go, Ruby or Java \cite{costache2017resource}.
+
+Tsuru supports the concept of services, which, inside Tsuru's nomenclature must be understood as a "well-defined API that Tsuru communicates with to provide extra functionality for applications"~\footnote{https://docs.tsuru.io/1.6/understanding/concepts.html\#services}. A Tsuru service is a software that exposes an HTTP API that implements a specification supplied by Tsuru's documentation, and is registered to a Tsuru target (a particular installation of Tsuru upon some infrastructure). After registering the service, a Tsuru user can issue command-line commands to interact with the service, like creating a new instance or binding it to an application. When this is done, the commands will be issued against the Tsuru target, and Tsuru itself will call the registered service so it can perform the actions needed to comply with the user's commands.
+
+\subsection{Tools Needed to Build The Proposed Service}
+
+Here are analyzed the tools needed to build the service to provide server push functionality, that will be deployed and evaluated on the cloud stack described in the previous topic.
+
+\subsubsection{The Go programming language}
+
+For the new software components that must be developed to fulfill this proposal the Go programming language is an adequate choice. The language is developed by Google, and aims at providing good performance and simple primitives for building concurrent systems.
+
+As stated by \citetexto{westrup2014using}, Go is a compiled, performant ``general purpose language which is especially popular for writing web servers and related tasks'', which produces small binaries. Go is specially well suited for systems development, being used on several large projects, included some related to the present work, like Tsuru itself, Docker, Terraform, and also other well-known systems like Kubernetes~\footnote{https://github.com/kubernetes/kubernetes} and etcd~\footnote{https://github.com/etcd-io/etcd}.
+
+\subsubsection{Redis}
+
+In order to achieve great flexibility and scalability on the push service instances, a pub/sub mechanism is proposed between the API that the message producer calls and the Nginx with the Push Stream module that the application user connects with to receive the server push.
+
+Besides that, each instance of the push service will need to store a very limited set of information, so a storage system is needed. Redis, being a key-value storage and a highly-optimized pub/sub system \cite{gascon2015dynamoth}, provides both features.

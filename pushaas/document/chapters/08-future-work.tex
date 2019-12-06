@@ -1,0 +1,23 @@
+\section{Future Work} \label{section-future-work}
+
+While the PushaaS system is currently functional, it has several shortcomings that reduce its flexibility and applicability for real-world scenarios. Some of these shortcomings were known from the beginning and were intentional in order to reduce the scope of the current work, while others were noted by the interviewees on the validation process. Besides the shortcomings pointed, other approaches and techniques were also suggested, which can guide future work with different approaches than what was developed on this work.
+
+Some aspects of the Push Service that could be evolved include:
+\begin{itemize}
+    \item support for other authentication schemes, besides HTTP basic auth, making the Push Service more secure and fitter for usage on complex environments.
+    \item the system could benefit from load tests, investigating how the system behaves under heavy load, and tuning the system so its components can be scaled evenly, avoiding bottlenecks.
+    \item in the case of scaling horizontally by adding new instances of the push-stream component, the problem of initializing the state of new push-stream instances (so the newly created instance can support backtrack of messages) was pointed on the evaluation and is still an open problem in the current implementation.
+\end{itemize}
+
+Some aspects of the PushaaS that could be evolved include:
+\begin{itemize}
+    \item support for multiple plans. As stated previously, this work only implemented the default "small" plan. Other plans could be supported. The plans should consider both aspects of vertical sizing of computational resources, as well as horizontal deployments and load balancing between instances of the components. Multiple instances of components such as the push-api or the push-stream are desired both for load distribution reasons as well as for high availability needs. Also the sizing of the push-redis component should be considered. Large plans, with higher needs of performance and availability could benefit from the usage of different Redis architectures, such as using Sentinel~\footnote{https://redis.io/topics/sentinel} for high-availability or a cluster mode for supporting higher loads.
+    \item implementation of different provisioners. The pushaas application already supports application-level configuration of the chosen provisioner, but currently only Amazon ECS is implemented. For real-world scenarios, is likely that organizations would need different provisioners to fit their infrastructure stack.
+    \item improvements on the Amazon ECS provisioner. While the provisioner is fully functional, it could be optimized by provisioning some components in parallel.
+\end{itemize}
+
+Some other approaches to achieve the results intended by this work were suggested on the evaluation and present interesting ways of evolving the solution:
+\begin{itemize}
+    \item integration and usage of existing Tsuru services. DBaaS~\footnote{https://github.com/globocom/database-as-a-service} (Database as a Service) and RPaaS~\footnote{https://github.com/tsuru/rpaas} (Reverse Proxy as a Service) are more established Tsuru services that could be further integrated in order to provision parts of the infrastructure needed for Push Service instances.
+    \item development of a "cluster mode" on the Nginx Push Stream module, allowing to deploy multiple instances of Nginx with the Push Stream module and connecting them in a cluster, allowing native sharding of channels and distribution of published messages between the instances, without the need of the external distribution system, performed on this work by the pub-sub on the push-redis and usage of the push-agent.
+\end{itemize}

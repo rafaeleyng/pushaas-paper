@@ -1,0 +1,186 @@
+\section{Results Analysis} \label{section-results}
+
+\subsection{Questionnaire}
+
+There were 15 respondents to the questionnaire. The questionnaire's sections will be analyzed on the following sections.
+
+\subsubsection{Interviewee Background}
+
+The first section of the questionnaire was used to determine the interviewee's degree of experience in the software development field, as well as familiarity with technologies used on this project. Table~\ref{table:result-experience} shows the number of years of experience in the software development field of the interviewees.
+
+\begin{table}[h!]
+    \centering
+    \begin{tabular}{|c|c|c|c|}
+        \hline
+        0 to 5 years & 6 to 10 years & 11 to 15 years & 16 to 20 years \\
+        \hline
+        2 people & 3 people & 6 people & 4 people \\
+        \hline
+    \end{tabular}
+    \caption{Interviewees experience in the software development field}
+    \label{table:result-experience}
+\end{table}
+
+All the interviewees work currently as software developers, devops, system administrators or managers of development teams.
+
+About the familiarity with the Tsuru platform, all the interviewees were familiar with the platform. The familiarity ranged from around 1 year of daily usage as a client of the platform, to Tsuru team members, like core developer and and product owner, with several years of experience on the platform.
+
+About the familiarity with the Push Stream module, nine interviewees either did not know the project, or only knew it by name, without any practical experience. The other six interviewees experience varied between being a user, managing teams that work with the module, and being a developer of the project.
+
+It was important to know the interviewees background in the software development field and with the technologies associated with the present work, because it helps to better analyze the subsequent questions, specific about the project.
+
+
+\subsubsection{Server Push}
+
+In the single-question section about the server push functionality, the interviewees were asked to speak about the relevance of server push functionality on modern applications.
+
+All the responses considered it relevant, with some noting it as highly relevant. The main reasons were:
+\begin{itemize}
+    \item clients can get updates as soon as possible, which is a relevant feature for the application business.
+    \item promotes a more engaging experience.
+    \item the freshness sensation improves the overall user experience on a digital product.
+    \item better resource usage (both on server-side and on client-side) when compared to polling techniques.
+\end{itemize}
+
+
+\subsubsection{Push Service}
+
+On this section, the interviewees were asked to evaluate the Push Service system as a standalone solution to implement the server push functionality, without taking into account its integration to the Tsuru platform or the provisioning of instances upon a service call (examined on the next section).
+
+The first question of the section was about the perception of the horizontal scalability of the Push Service architecture. The general perception was that the components can easily be horizontally scaled with the addition of multiple instances of each component, mainly attributed to the usage of Redis as a pub-sub mechanism to uncouple the other components. It was noted that the ability of scaling the Push Service system can avoid the need of scaling the client application. Some interesting attention points noted were:
+\begin{itemize}
+    \item the Redis itself, if not properly scaled, can become the system bottleneck on scenarios of high load on the publishing interface. This should not be a problem on most systems since is reasonable to expect a higher load always on the subscribing interface than on the publishing interface, but nonetheless is a real possibility and constitutes a good point of development for future work.
+    \item on the subscribing interface, the connected clients can be distributed across multiple push-stream instances, thus not posing a problem. But since there is no sharding of channels across the push-stream instances (i.e., all channels will exist on all push-stream instances), if the number of persistent channels grows too much over time, the instances might run out of memory to store all channels data. On most real-life systems the number of channels should not be a problem, and the usage of channels with an appropriate TTL configured should keep the number of existing channels to a reasonable number.
+\end{itemize}
+
+The second question was about the perception of independent scaling of both the publishing and the subscribing interface of the system. The general perception is that both ends of the system can be scaled independently to accommodate the client application need of extra load on the publishing or subscribing interfaces. Again, the usage of the Redis as a pub-sub was pointed as a reason for this. One interesting attention point noted was how new instances of push-stream and push-agent can be initialized with previously published data, in order to constitute a valid initial state that clients can request when connecting to a push-stream instance. This point is specially interesting because the Push Stream module supports a backtrack mechanism. A client that will connect to a push-stream instance can specify a number of seconds to backtrack, e.g., if the client specifies 60 seconds, it will receive from the push-stream messages published on the previous 60 seconds. The Push Stream module handles this natively by holding the messages in memory for a specified period of time, but the current implementation of the Push Service does not provide any means of initializing push-agent instances with a state of previously published messages on other instances.
+
+The third question asked about the satisfaction about the extra features that the Push Service system provides on top of the plain usage of the Push Stream module, namely the authentication, and ability of creating persistent channels, with optional expiration. This question used a Likert scale and the respondent was asked to justify the answer. Table~\ref{table:result-push-service-1} shows the distribution on the scale. The main observations were that authentication was an important feature to be added. The resources savings suggested by having expiration on channels was also pointed as a very important feature, while one answer demonstrated skepticism about the actual amount of resources savings that this would enable.
+
+\begin{table}[h!]
+    \centering
+    \begin{tabular}{|c|c|c|c|c|}
+        \hline
+        1 (very dissatisfied) & 2 (dissatisfied) & 3 (neutral) & 4 (satisfied) & 5 (very satisfied) \\
+        \hline
+        0 & 0 & 1 & 8 & 6 \\
+        \hline
+    \end{tabular}
+    \caption{Satisfaction about extra features}
+    \label{table:result-push-service-1}
+\end{table}
+
+Lastly, the users were asked about the satisfaction with the Push Service Admin. This question used a Likert scale and the respondent was asked to justify the answer. Table~\ref{table:result-push-service-2} shows the distribution on the scale. The simplicity, presence of metrics and ability of viewing the publishing stream were regarded as important features.
+
+\begin{table}[h!]
+    \centering
+    \begin{tabular}{|c|c|c|c|c|}
+        \hline
+        1 (very dissatisfied) & 2 (dissatisfied) & 3 (neutral) & 4 (satisfied) & 5 (very satisfied) \\
+        \hline
+        0 & 0 & 2 & 3 & 10 \\
+        \hline
+    \end{tabular}
+    \caption{Satisfaction about Push Service Admin}
+    \label{table:result-push-service-2}
+\end{table}
+
+
+\subsubsection{PushaaS}
+
+On this section, the interviewees were asked to evaluate the offering of Push Service instances as a service, taking into account its integration with the Tsuru platform.
+
+The first question of the section asked the interviewees to point positive aspects about the offering of a server push service as a cloud service for the Tsuru platform. All interviewees brought up positive aspects, and the main aspects mentioned were:
+\begin{itemize}
+    \item simplicity and quickness of applications to use the service.
+    \item autonomy for applications developers working with Tsuru to provision instances.
+    \item the gain in scale that the service allows (i.e., implement the service once and all applications on the platform can benefit from it with little extra effort).
+    \item expected low maintenance cost.
+    \item isolation between instances for different applications, allowing for independent failures.
+    \item facilitated billing, because the isolation of instances allows for independent billing for applications.
+    \item simplicity to integrate with applications.
+\end{itemize}
+
+The second question asked the interviewees to point negative aspects about the offering of a server push service as a cloud service for the Tsuru platform. Six interviewees brought up negative aspects, and the main aspects mentioned were:
+\begin{itemize}
+    \item less flexibility when compared to a service provisioned manually.
+    \item the multiplication of instances could required more idle resources, when publishing is sporadic. Each instance would require a minimum infrastructure allocated to run each of the Push Service components.
+    \item integration with Tsuru could be overkill in very simple scenarios.
+\end{itemize}
+
+The third question asked the interviewees to evaluate the convenience for application developers to use the Push Service as a cloud service offered by Tsuru. The process for application developers to use the service consist of asking the creation of the instance via the Tsuru CLI, waiting for the instance to become available, and asking for the service instance do be bound to the application, also via the Tsuru CLI. This process is rather standard for any Tsuru service. This question used a Likert scale and the respondent was asked to justify the answer. Table~\ref{table:result-pushaas-1} shows the distribution on the scale. The process was noted to follow the expected steps for any Tsuru service. The only attention point brought up was about the need for waiting the service instance to be provisioned before asking for the bind, which is part of the provisioning of any Tsuru service, not particular to the PushaaS.
+
+\begin{table}[h!]
+    \centering
+    \begin{tabular}{|c|c|c|c|c|}
+        \hline
+        1 (very dissatisfied) & 2 (dissatisfied) & 3 (neutral) & 4 (satisfied) & 5 (very satisfied) \\
+        \hline
+        0 & 0 & 0 & 1 & 14 \\
+        \hline
+    \end{tabular}
+    \caption{Satisfaction with the convenience of Push Service usage as Tsuru service}
+    \label{table:result-pushaas-1}
+\end{table}
+
+The fourth question asked the interviewees to express their satisfaction level about the time needed to provision a new Push Service instance. This question used a Likert scale and the respondent was asked to justify the answer. Table~\ref{table:result-pushaas-2} shows the distribution on the scale. The time needed to provision an full instance of the Push Service is largely determined by the chosen provisioner and the service plan, which will determine in which infrastructure and how many infrastructure components will actually be provisioned, so it must be understood that the interviewees perception of time during the system evaluation is based upon a particular provisioner (Amazon ECS) provisioning components for a particular service plan (the "small" plan).
+
+\begin{table}[h!]
+    \centering
+    \begin{tabular}{|c|c|c|c|c|}
+        \hline
+        1 (very dissatisfied) & 2 (dissatisfied) & 3 (neutral) & 4 (satisfied) & 5 (very satisfied) \\
+        \hline
+        0 & 0 & 1 & 2 & 12 \\
+        \hline
+    \end{tabular}
+    \caption{Satisfaction with the provisioning time of a Push Service instance}
+    \label{table:result-pushaas-2}
+\end{table}
+
+The last question asked about general impressions about the usage of the PushaaS system to implement the server push functionality on applications executed on the Tsuru platform. The perception was overall positive on all answers, and some aspects were highlighted:
+\begin{itemize}
+    \item the system leverages existing technologies and integrates them in a easy and inexpensive way.
+    \item the PushaaS usage is very familiar for Tsuru users, fulfilling the application developer expectations.
+    \item isolation of service instances is a beneficial aspect for organizations with multiple applications that consume the service.
+    \item the service architecture favors scalability.
+    \item the extra features added are relevant.
+    \item the system solves some problems that the plain use of the Nginx Push Stream module would present.
+\end{itemize}
+
+Some attention points also were brought up:
+\begin{itemize}
+    \item the need to evaluate the horizontal scalability of Push Service in real-life applications.
+    \item for small use-cases, the system is too complex and application-level handling of server push functionality could be preferable.
+    \item for better integration with organizations, other authentication mechanisms should be supported besides HTTP basic.
+    \item the Nginx Push Stream module does not support channels sharding. Future work could be done in the Push Stream module itself to support sharding and a cluster mode of operation, which could allow for easier horizontal scalability even replace some components of the proposed Push Service presented in this work.
+\end{itemize}
+
+
+\subsection{Provisioning Benchmarks}
+
+In order to obtain some baseline about the time needed to provision an instance of the Push Service, a benchmark of the provisioning of ten instances sequentially was conducted. Here again is important to notice that the provisioning time is highly dependent on the provisioner and on the instance plan. The benchmarks were conducted using the "small" plan and the Amazon ECS provisioner. Table~\ref{table:result-benchmark} shows time that the provisioning of each instance took.
+
+\begin{table}[h!]
+    \centering
+    \begin{tabular}{|c|c|}
+        \hline
+        Instance & Time (in seconds) \\
+        \hline
+        1 & 236 \\
+        2 & 205 \\
+        3 & 331 \\
+        4 & 244 \\
+        5 & 239 \\
+        6 & 244 \\
+        7 & 199 \\
+        8 & 198 \\
+        9 & 186 \\
+        10 & 259 \\
+        \hline
+    \end{tabular}
+    \caption{Benchmark of time to provision instances of Push Service}
+    \label{table:result-benchmark}
+\end{table}
+
+The average time was 234 seconds, with the median being 237. The times the interviewees experimented on the demonstration was likely similar to the observed times on this benchmark.

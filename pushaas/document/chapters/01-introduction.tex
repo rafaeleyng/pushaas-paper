@@ -1,0 +1,49 @@
+\section{Introduction} \label{section-introduction}
+
+Several applications currently available to both public and private audiences have aggressive scalability demands, and usually provide a feature-rich experience to their users, as ``these applications are designed to have high user interactivity with low user-perceived latencies'' \cite{estep2013mobile}. Cloud computing has brought a number of new possibilities to application developers \cite{garcia2012challenges}, backed by a diversity of cloud models and services that can be explored in order to enable developers to meet their application needs, either in performance, scalability or functionality.
+
+In this scenario, the paradigm of service-oriented computing ``becomes a common paradigm for developing applications in a cost-effective manner'' \cite{la2013framework}, with the fundamental notion of reusing services across several applications.
+
+There are several software and hardware components that are now offered as a service. On the literature can be found Database-as-a-Service, Storage-as-a-Service, Monitoring-as-a-Service, to name a few \cite{kachele2013beyond,duan2015everything,sharma2015evolution}. The plurality is such that the "Everything-as-a-Service" (XaaS) trend can be identified, where everything that can viably be offered as a service can eventually be so \cite{duan2015everything}.
+
+
+\subsection{Objectives}
+
+\subsubsection{General Objective}
+
+The present work objectives to implement and evaluate an open-source cloud service for the Tsuru PaaS system to provide server push functionality for applications developed to run on Tsuru's platform.
+
+\subsubsection{Specific Objectives}
+
+\begin{itemize}
+    \item develop the Push Service system, a micro-services based system that leverages the Nginx Push Stream \cite{sitePushStream} module to provide server push technology, with a horizontally scalable architecture to overcome limitations of the Push Steam module, while providing an extra set of features such as authentication of message producers, and configurable expiration of communication channels.
+    \item develop the PushaaS system, a service that provisions Push Service instances upon service calls, allowing clients to use the service while abstracting its complexities of provisioning and configuration.
+    \item integrate the PushaaS system to the Tsuru platform, allowing application developers on the Tsuru platform to integrate the Push Service with their applications by making calls to the Tsuru command-line interface (Tsuru CLI).
+    \item evaluate the implementation in terms of flexibility of its architecture, adequacy to the Tsuru ecosystem, and convenience for application developers who want to integrate the service with client applications.
+\end{itemize}
+
+
+\subsection{Delimitation}
+
+The scope and limitations of the present work will be presented now. This work is aimed to result in a fully functional implementation of the PushaaS system. Nonetheless, some limitations will be present:
+
+\begin{itemize}
+    \item the Push Service system was designed to allow for viable horizontal scalability, but the present work does not provide means for actually performing sizing and scaling actions on Push Service instances.
+    \item the PushaaS component provisions Push Service instances relying on an abstract concept of a provisioner. The system was designed to allow further development of multiple provisioners, allowing multiple infrastructure providers to be used to provide infrastructure resources. The initial implementation of this work only provides implementation for a provisioner that works with the Amazon Elastic Container Service (ECS) as the infrastructure provider.
+    \item in order to better fit with real-world organizations needs, the Push Service supports authentication on API calls. Only HTTP basic authentication was implemented on this work.
+\end{itemize}
+
+In order to avoid software incompatibilities, this implementation is based on the following software versions:
+\begin{itemize}
+    \item Tsuru \cite{siteTsuru} platform on the 1.6 or 1.7 version, and other compatible versions.
+    \item the server push functionality is specifically provided using the open source Push Stream module for Nginx server. The module version is 0.5.4.
+    \item software components developed on this work will be developed and built with the Go programming language on the 1.12 version, in order to result in small binaries with good runtime performance, features of the Go language.
+    \item the Amazon ECS provisioner implemented on the PushaaS works with the launch type Fargate \cite{siteFargate}, specifically using Docker containers. Docker containers are a convenient way of deploying applications, abstracting complexity from application developers, and Amazon ECS is a mature tool that provides the cluster infrastructure needed to run Docker containers. The Fargate launch type goes an extra step further by totally abstracting the underlying computational nodes required to run the cluster.
+\end{itemize}
+
+
+\subsection{Organization of this Paper}
+
+Section \ref{section-theoretical-framework} provides a theoretical framework as a foundation for several concepts and technologies that will be explored throughout the paper. Section \ref{section-related-work} analyzes related work to the topics of cloud computing, PaaS and server push techniques. Section \ref{section-methodology} exposes the methodological approach applied on this work.
+
+Section \ref{section-implementation} presents the system architecture and important implementation details for the proposed solution. Section \ref{section-results} presents and discusses the results of the system evaluation. Section \ref{section-conclusion} finishes with a brief analysis of the implementation and achieved results, and section \ref{section-future-work} discusses several aspects that could be explored and further developed on future work.
